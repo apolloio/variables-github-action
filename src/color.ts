@@ -32,7 +32,7 @@ export function parseColor(color: string): RGB | RGBA {
       ...(alphaValue ? { a: parseInt(alphaValue, 16) / 255 } : {}),
     }
   } else {
-    throw new Error('Invalid color format')
+    throw new Error('Invalid color format: ' + color)
   }
 }
 

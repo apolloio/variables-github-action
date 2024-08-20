@@ -49,7 +49,7 @@ export function readJsonFiles(files: string[]) {
   return tokensJsonByFile
 }
 
-function flattenTokensFile(tokensFile: TokensFile) {
+export function flattenTokensFile(tokensFile: TokensFile) {
   const flattenedTokens: { [tokenName: string]: Token } = {}
 
   Object.entries(tokensFile).forEach(([tokenGroup, groupValues]) => {
@@ -59,7 +59,7 @@ function flattenTokensFile(tokensFile: TokensFile) {
   return flattenedTokens
 }
 
-function traverseCollection({
+export function traverseCollection({
   key,
   object,
   tokens,
@@ -118,7 +118,7 @@ function isAlias(value: string) {
   return value.toString().trim().charAt(0) === '{'
 }
 
-function variableValueFromToken(
+export function variableValueFromToken(
   token: Token,
   localVariablesByCollectionAndName: {
     [variableCollectionId: string]: { [variableName: string]: LocalVariable }
