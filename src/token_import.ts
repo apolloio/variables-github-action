@@ -114,7 +114,7 @@ function variableResolvedTypeFromToken(token: Token) {
   }
 }
 
-function isAlias(value: string) {
+export function isAlias(value: string) {
   return value.toString().trim().charAt(0) === '{'
 }
 
