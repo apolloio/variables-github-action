@@ -69,18 +69,11 @@ function basicValueFromToken(token: Token): string | number | boolean {
     }
 
     if (token.$type === 'color') {
-      let { r, g, b, a } = parseColor(value) as RGBA;
-      r *= 255;
-      g *= 255;
-      b *= 255;
-      if (a) {
-        return `rgba(${r}, ${g}, ${b}, ${a})`;
-      }
-      return `rgb(${r}, ${g}, ${b})`;
+      return value;
     }
 
-    // Values such as font family are wrapped in quotes
-    return `"${value}"`;
+    // Values with whitespace are wrapped in quotes
+    return value.includes(' ') ? `"${value}"` : value;
   }
 
   // Numeric values are assumed to be pixels. We should probably use strings instead?
