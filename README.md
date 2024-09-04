@@ -55,6 +55,10 @@ This workflow has some key behaviors to note:
 - For optional Figma variable properties like scopes and code syntax, the workflow will not modify these properties in Figma if the tokens json files do not contain those properties.
 - If a string variable is bound to a text node content in the same file, and the text node uses a [shared font in the organization](https://help.figma.com/hc/en-us/articles/360039956774), that variable cannot be updated and will result in a 400 response.
 
+### Convert JSON tokens to SCSS Styles
+
+After tokens are synced from Figma to local, you can convert them to SCSS Stylesheets full of CSS variables. See ["Local Development"](#local-development).
+
 ## Local development
 
 You can run the GitHub actions locally by running `npm install` and creating a `.env` file with the following contents:
@@ -76,6 +80,13 @@ npm run sync-figma-to-tokens
 
 # Writes to the specified directory
 npm run sync-figma-to-tokens -- --output directory_name
+```
+
+To convert your JSON tokens to a stylesheet:
+
+```sh
+# Outputs to directory ./dist/
+npm run process-tokens-to-css
 ```
 
 ### Testing
