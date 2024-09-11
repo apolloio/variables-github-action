@@ -73,7 +73,7 @@ function basicValueFromToken(token: Token): string | number | boolean {
     }
 
     // Values with whitespace are wrapped in quotes
-    return value.includes(' ') ? `"${value}"` : value;
+    return value.includes(' ') ? `'${value}'` : value;
   }
 
   // Numeric values are assumed to be pixels. We should probably use strings instead?
