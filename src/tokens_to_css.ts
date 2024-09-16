@@ -76,8 +76,14 @@ function basicValueFromToken(token: Token): string | number | boolean {
     return value.includes(' ') ? `'${value}'` : value;
   }
 
+  if (typeof value === 'boolean') {
+    return value;
+  }
+
   // Numeric values are assumed to be pixels. We should probably use strings instead?
-  return `${value}px`;
+  // Truncate to max of 4 decimal places.
+  // Figma API is prone to floating point precision errors.
+  return `${Number.parseFloat((value).toFixed(4))}px`;
 }
 
 // When processing a token set and we see a new group, add a header comment
