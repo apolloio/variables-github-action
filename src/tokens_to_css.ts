@@ -37,7 +37,7 @@ async function readTokensFileAndWriteToCssFile(filePath: string) {
   const tokensFile = JSON.parse(tokensFileRaw);
   const css = processJsonToCssVars(tokensFile);
 
-  const outfileName = `${OUTPUT_DIR}/${filePath.replace('.json', '.scss')}`;
+  const outfileName = `${OUTPUT_DIR}/${filePath.replace('.json', '.module.scss')}`;
   // Output as a SCSS placeholder selector
   const rootSelector = '%' + filePath.replace('.json', '').replaceAll('.', '-').toLowerCase();
   await writeCssToFile(outfileName, css, rootSelector);
