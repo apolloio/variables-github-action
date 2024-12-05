@@ -1,7 +1,5 @@
-import { RGBA } from '@figma/rest-api-spec'
 import { Token, TokensFile } from './token_types.js'
 import { isAlias, flattenTokensFile } from './token_import.js';
-import { parseColor } from './color.js'
 import fs from 'node:fs/promises';
 
 const INPUT_DIR = 'tokens_new';
