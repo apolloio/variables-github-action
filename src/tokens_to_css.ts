@@ -54,9 +54,10 @@ function writeCssToFile(outfileName: string, css: string[], rootSelector: string
   return fs.writeFile(outfileName, outfileData);
 }
 
+type TokenBasicValue = string | number | boolean;
 // TODO: Support more types - https://tr.designtokens.org/format/#types
 //       Work with design to better specify types in the Tokens library.
-function basicValueFromToken(token: Token): string | number | boolean {
+function basicValueFromToken(token: Token): TokenBasicValue {
   const value = token.$value;
 
   if (typeof value === 'object') {
@@ -105,6 +106,62 @@ function emitGroupComment(prevGroup: string, nextGroup: string) {
   return [ nextGroup, comment ];
 }
 
+// Some groups need post-processing from the values used by Figma to the values used by CSS
+const GROUP_POST_PROCESSORS: { [key: string]: (token: TokenBasicValue) => TokenBasicValue } = {
+
+  // Figma uses OpenType font weight names, but CSS uses numerical values.
+  // Convert those names to numbers.
+  'Typeface/Base/Weight': (value: TokenBasicValue): TokenBasicValue => {
+    try {
+      if (typeof value === 'number') {
+        // If the value is already a number, return it
+        return value;
+      }
+
+      if (typeof value !== 'string') {
+        throw Error('Invalid value: Value must be a string, but got ' + value);
+      }
+
+      value = value.toLowerCase()
+
+      // Based on https://learn.microsoft.com/en-us/typography/opentype/spec/os2#usweightclass
+      const mappedValue = {
+        'thin': 100,
+        'extralight': 200,
+        'ultralight': 200,
+        'light': 300,
+        'normal': 400,
+        'regular': 400,
+        'medium': 500,
+        'semibold': 600,
+        'demibold': 600,
+        'bold': 700,
+        'extrabold': 800,
+        'ultrabold': 800,
+        'extrablack': 900,
+        'black': 900,
+        'heavy': 900,
+      }[value];
+
+      if (typeof mappedValue === 'undefined') {
+        throw Error(`Unknown value in group: ${value} is not a valid font weight`);
+      }
+
+      return mappedValue;
+    } catch (e) {
+      console.warn(`[Typeface/Base/Weight] Failed to postprocess token:`, e);
+      return value;
+    }
+  }
+}
+
+function postprocessGroup(group: string, tokenValue: TokenBasicValue): TokenBasicValue {
+  if (group in GROUP_POST_PROCESSORS) {
+    return GROUP_POST_PROCESSORS[group](tokenValue);
+  }
+  return tokenValue;
+}
+
 // Process a TokensFile to an array of lines of CSS
 function processJsonToCssVars(json: TokensFile) {
   const flatTokens = flattenTokensFile(json);
@@ -114,7 +171,8 @@ function processJsonToCssVars(json: TokensFile) {
   return Object.entries(flatTokens).map(([ key, token ]: [ key: string, token: Token ]) => {
     const nextGroup = key.split('/').slice(0, -1).join('/');
     [ group, comment ] = emitGroupComment(group, nextGroup);
-    return `${comment}--${stringifyTokenKeyToCssVar(key)}: ${basicValueFromToken(token)};`;
+    const basicValue = postprocessGroup(group, basicValueFromToken(token));
+    return `${comment}--${stringifyTokenKeyToCssVar(key)}: ${basicValue};`;
   });
 }
 
