@@ -8,7 +8,7 @@
     "process-tokens-to-css": "tsx src/tokens_to_css.ts",
     "clean": "rimraf dist && rimraf tokens_new",
     "sync-figma-to-css": "npm run clean && npm run sync-figma-to-tokens && npm run process-tokens-to-css",
-    "cp-css-to-app": "if test -n \"$LEADGENIE_ROOT\"; then cp ./dist/* $LEADGENIE_ROOT/assets/common/scss/css-variables/design-tokens/figma/; else echo '$LEADGENIE_ROOT is empty, set this to the path of your project'; exit 1; fi",
+    "cp-css-to-app": "if test -n \"$LEADGENIE_ROOT\"; then cp ./dist/* $LEADGENIE_ROOT/packages/design-system/src/foundations/css-variables/design-tokens/figma/; else echo '$LEADGENIE_ROOT is empty, set this to the path of your project'; exit 1; fi",
     "test": "jest"
   },
   "dependencies": {
